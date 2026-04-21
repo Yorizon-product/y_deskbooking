@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 const PUBLIC_PATHS = ["/", "/forbidden"];
-const PUBLIC_PREFIXES = ["/sign-in"];
+const PUBLIC_PREFIXES = ["/sign-in", "/dev-auth"];
 
 export default auth((req) => {
   const { nextUrl } = req;

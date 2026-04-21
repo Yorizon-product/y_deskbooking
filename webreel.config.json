@@ -1,0 +1,25 @@
+{
+  "$schema": "https://webreel.dev/schema/v1.json",
+  "outDir": "./docs",
+  "defaultDelay": 350,
+  "videos": {
+    "teaser": {
+      "url": "http://localhost:3000/dev-auth?next=/book",
+      "viewport": "iphone-15-pro-max",
+      "waitFor": "main",
+      "output": "teaser.gif",
+      "steps": [
+        { "action": "pause", "ms": 1500 },
+        { "action": "scroll", "y": 120, "delay": 500 },
+        { "action": "pause", "ms": 700 },
+        { "action": "click", "selector": "button[aria-label='Book 1-A for All day']", "delay": 1200 },
+        { "action": "pause", "ms": 1200 },
+        { "action": "navigate", "url": "http://localhost:3000/my-bookings", "delay": 500 },
+        { "action": "wait", "selector": "h1", "timeout": 5000 },
+        { "action": "pause", "ms": 2600 },
+        { "action": "scroll", "y": 80, "delay": 400 },
+        { "action": "pause", "ms": 1800 }
+      ]
+    }
+  }
+}

@@ -52,4 +52,9 @@ docs/screenshots/magic-link-email.txt
 
 # tsc incremental build cache
 tsconfig.tsbuildinfo
+
+# webreel intermediate artifacts (final teaser.gif + teaser.png are committed)
+/videos/
+/frames/
+/.webreel/
 .vercel

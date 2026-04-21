@@ -1,5 +1,9 @@
 # y_deskbooking
 
+<p align="center">
+  <img src="./docs/teaser.gif" alt="Booking a desk on mobile: tap a free desk, see it land on 'My bookings' as a hero card with the floor plan inside." width="320">
+</p>
+
 > A minimal, opinionated desk-booking tool for hot-desking offices.
 > Spec-first (OpenSpec), implemented in Next.js, and shipped with a DB-level
 > guarantee that two people can never book the same desk for overlapping time.
