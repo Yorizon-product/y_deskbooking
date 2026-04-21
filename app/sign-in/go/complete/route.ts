@@ -4,6 +4,19 @@ import { encode } from "@auth/core/jwt";
 import { prisma } from "@/lib/prisma";
 
 /**
+ * Match Auth.js v5's token-hashing scheme so we can look up the row it created.
+ * Auth.js stores sha256(`${rawToken}${secret}`) in VerificationToken.token, not
+ * the raw value — see @auth/core's handleLogin email flow.
+ */
+async function hashEmailToken(rawToken: string, secret: string): Promise<string> {
+  const data = new TextEncoder().encode(`${rawToken}${secret}`);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+/**
  * POST-only handler that finalises a magic-link sign-in.
  *
  * Why this exists: corp email gateways (Outlook SafeLinks and friends)
@@ -31,11 +44,14 @@ export async function POST(req: NextRequest) {
   const signInFail = new URL("/sign-in?error=Verification", origin);
   if (!token || !email) return NextResponse.redirect(signInFail);
 
+  // Auth.js stores the hash of (rawToken + secret); the email carries the raw.
+  const hashedToken = await hashEmailToken(token, process.env.AUTH_SECRET!);
+
   // Atomic fetch + delete: the token is single-use even under retries.
   let vt;
   try {
     vt = await prisma.verificationToken.delete({
-      where: { identifier_token: { identifier: email, token } },
+      where: { identifier_token: { identifier: email, token: hashedToken } },
     });
   } catch {
     return NextResponse.redirect(signInFail);
