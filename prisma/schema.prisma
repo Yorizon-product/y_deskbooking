@@ -1,0 +1,131 @@
+// Prisma schema — y_deskbooking
+// The range-exclusion constraint on Booking is added by a SQL migration,
+// not by this schema (Prisma does not model EXCLUDE constraints natively).
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [btree_gist]
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum BookingStatus {
+  confirmed
+  cancelled
+  completed
+}
+
+enum Slot {
+  morning
+  afternoon
+  all_day
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  role      Role      @default(user)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  bookings       Booking[] @relation("BookingUser")
+  cancelled      Booking[] @relation("BookingCancelledBy")
+  accounts       Account[]
+  sessions       Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Floor {
+  id           String   @id @default(cuid())
+  name         String
+  displayOrder Int      @default(0)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  desks Desk[]
+}
+
+model Desk {
+  id         String   @id @default(cuid())
+  floorId    String
+  label      String
+  attributes Json     @default("{}")
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  floor    Floor     @relation(fields: [floorId], references: [id], onDelete: Restrict)
+  bookings Booking[]
+
+  @@unique([floorId, label])
+  @@index([floorId])
+}
+
+model Booking {
+  id            String        @id @default(cuid())
+  deskId        String
+  userId        String
+  slot          Slot
+  startAt       DateTime
+  endAt         DateTime
+  status        BookingStatus @default(confirmed)
+  createdAt     DateTime      @default(now())
+  cancelledAt   DateTime?
+  cancelledById String?
+  cancelReason  String?
+
+  desk        Desk  @relation(fields: [deskId], references: [id], onDelete: Restrict)
+  user        User  @relation("BookingUser", fields: [userId], references: [id], onDelete: Cascade)
+  cancelledBy User? @relation("BookingCancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+
+  @@index([userId, startAt])
+  @@index([deskId, startAt])
+  @@index([status, startAt])
+}

@@ -1,21 +1,21 @@
 ## 1. Project bootstrap
 
-- [ ] 1.1 Run `npx create-next-app@latest` with TypeScript, App Router, Tailwind, ESLint, `src/` dir off
-- [ ] 1.2 Initialize git, add `.gitignore` (Next defaults + `.env*.local`, `prisma/*.db`)
-- [ ] 1.3 Install shadcn/ui via `npx shadcn@latest init`, configure `components.json` with the Yorizon palette
-- [ ] 1.4 Add base shadcn components: `button`, `input`, `label`, `form`, `card`, `dialog`, `dropdown-menu`, `select`, `table`, `tabs`, `badge`, `toast`, `sonner`, `tooltip`, `avatar`, `skeleton`
-- [ ] 1.5 Install `next-themes`, wire `<ThemeProvider>` in `app/layout.tsx`, add a theme-toggle component
-- [ ] 1.6 Load Inter via `next/font/google` and assign it to `--font-sans`
-- [ ] 1.7 Paste the Yorizon `:root` and `.dark` token blocks from `design.md` into `app/globals.css`
+- [x] 1.1 Scaffold Next.js 15 + TS + App Router + Tailwind v4 manually (existing repo, no `create-next-app` overwrite)
+- [x] 1.2 Initialize git, add `.gitignore` (Next defaults + `.env*.local`, `prisma/*.db`)
+- [x] 1.3 Configure `components.json` for shadcn/ui new-york style, Yorizon via CSS variables
+- [x] 1.4 Add initial shadcn components: `button`, `input`, `label`, `card` (remaining added on demand)
+- [x] 1.5 Install `next-themes`, wire `<ThemeProvider>` in `app/layout.tsx`, add `<ThemeToggle>`
+- [x] 1.6 Load Inter via `next/font/google` and assign it to `--font-sans`
+- [x] 1.7 Paste the Yorizon `:root` and `.dark` token blocks from `design.md` into `app/globals.css`
 
 ## 2. Database & ORM
 
 - [ ] 2.1 Provision a Neon Postgres database, add `DATABASE_URL` + `DIRECT_URL` to `.env.local`
-- [ ] 2.2 Install `prisma`, `@prisma/client`, initialize `prisma/schema.prisma`
-- [ ] 2.3 Define models: `User`, `Floor`, `Desk`, `Booking` per `design.md`
-- [ ] 2.4 Add a migration enabling the `btree_gist` extension and the range-exclusion constraint on `Booking(desk_id, tstzrange(start_at, end_at)) WHERE status='confirmed'`
-- [ ] 2.5 Add a singleton Prisma client in `lib/prisma.ts` that works under Vercel's cold-start model
-- [ ] 2.6 Write a `prisma/seed.ts` that seeds one admin user (email from `SEED_ADMIN_EMAIL`), two floors, and a handful of desks; add `npm run db:seed`
+- [x] 2.2 Install `prisma@^6`, `@prisma/client@^6`, initialize `prisma/schema.prisma`
+- [x] 2.3 Define models: `User`, `Floor`, `Desk`, `Booking` per `design.md` (plus Account / Session / VerificationToken for Auth.js)
+- [x] 2.4 Author SQL migration enabling `btree_gist` + range-exclusion constraint on `Booking(deskId, tstzrange(startAt, endAt))` + partial unique index for one-booking-per-user-per-day
+- [x] 2.5 Singleton Prisma client in `lib/prisma.ts` (dev-safe, serverless-safe)
+- [ ] 2.6 Write a `prisma/seed.ts` that seeds one admin user, two floors, and a handful of desks; add `npm run db:seed`
 
 ## 3. Authentication (`user-auth` capability)
 

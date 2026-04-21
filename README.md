@@ -2,7 +2,15 @@
 
 > A spec-first demo of a minimal desk-booking tool for hot-desking / flex-office teams.
 
-This repository currently contains the **complete design-and-specification package** for the project — written with [OpenSpec](https://github.com/Fission-AI/OpenSpec). No application code is in `main` yet; the design is the deliverable at this stage. The next commit series implements it from `openspec/changes/desk-booking-tool/tasks.md`.
+This repository contains a full OpenSpec package (proposal, design, specs, tasks) **and** the Next.js app scaffold implementing it. The app boots, builds clean, and renders the Yorizon theme. Auth, DB, and real booking logic land in the next task groups.
+
+## Preview
+
+| | Light | Dark |
+|---|---|---|
+| **Home** | ![Home · light](./docs/screenshots/home-light.png) | ![Home · dark](./docs/screenshots/home-dark.png) |
+| **Booking grid** | ![Book · light](./docs/screenshots/book-light.png) | ![Book · dark](./docs/screenshots/book-dark.png) |
+| **Sign-in** | ![Sign-in](./docs/screenshots/signin-light.png) | — |
 
 ---
 
@@ -117,7 +125,11 @@ Full deploy steps are task group 8 in `tasks.md`.
 - [x] Design (stack + full Yorizon token block)
 - [x] Specs (4 capabilities, scenario-backed)
 - [x] Task list (9 groups, ~50 tasks)
-- [ ] Implementation (not yet started)
+- [x] **Task group 1 — Project bootstrap** (Next.js 15, Tailwind v4, shadcn/ui new-york, Yorizon tokens live, theme toggle, Inter font)
+- [x] **Task group 2 — DB schema** (Prisma 6 schema + EXCLUDE-constraint SQL migration authored; awaiting Neon DB)
+- [ ] Task group 3 — Auth.js wiring
+- [ ] Task groups 4–6 — Admin, booking flow, oversight
+- [ ] Task groups 7–9 — Polish, deploy, screenshots-of-real-flow
 - [ ] First production deploy
 
 ## Licence
