@@ -10,12 +10,12 @@
 
 ## 2. Database & ORM
 
-- [ ] 2.1 Provision a Neon Postgres database, add `DATABASE_URL` + `DIRECT_URL` to `.env.local`
+- [x] 2.1 Neon Postgres project provisioned (`neondb` in eu-central-1), `DATABASE_URL` (pooled) + `DIRECT_URL` added to `.env.local`
 - [x] 2.2 Install `prisma@^6`, `@prisma/client@^6`, initialize `prisma/schema.prisma`
 - [x] 2.3 Define models: `User`, `Floor`, `Desk`, `Booking` per `design.md` (plus Account / Session / VerificationToken for Auth.js)
-- [x] 2.4 Author SQL migration enabling `btree_gist` + range-exclusion constraint on `Booking(deskId, tstzrange(startAt, endAt))` + partial unique index for one-booking-per-user-per-day
+- [x] 2.4 Migrations applied on Neon: `btree_gist` extension + EXCLUDE constraint `Booking_no_overlap` using a trigger-populated `during tstzrange` column (required because Postgres marks `tstzrange()` STABLE, blocking it from appearing in index expressions — even when wrapped). Overlap rejection verified by smoke test (`prisma/smoke-overlap.ts`). One-per-user-per-day rule moved to app code per migration comments.
 - [x] 2.5 Singleton Prisma client in `lib/prisma.ts` (dev-safe, serverless-safe)
-- [ ] 2.6 Write a `prisma/seed.ts` that seeds one admin user, two floors, and a handful of desks; add `npm run db:seed`
+- [x] 2.6 `prisma/seed.ts` seeds admin + 2 floors + 10 desks; `npm run db:seed` wired up via `tsx`; ran successfully against Neon
 
 ## 3. Authentication (`user-auth` capability)
 
