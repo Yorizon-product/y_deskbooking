@@ -13,10 +13,24 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       apiKey: process.env.AUTH_RESEND_KEY,
       from: process.env.AUTH_EMAIL_FROM,
       async sendVerificationRequest({ identifier: to, url, provider }) {
-        const { host } = new URL(url);
+        // Auth.js hands us a URL like:
+        //   https://app.example.com/api/auth/callback/resend?callbackUrl=…&token=…&email=…
+        // That endpoint is GET-only and single-use. Corp mail scanners
+        // (Outlook SafeLinks etc.) pre-fetch GET URLs to scan for phishing,
+        // which consumes the token before the human clicks. We redirect the
+        // email link to our own landing page, which POSTs to complete sign-in.
+        const incoming = new URL(url);
+        const token = incoming.searchParams.get("token") ?? "";
+        const callbackUrl = incoming.searchParams.get("callbackUrl") ?? "/";
+        const landing = new URL("/sign-in/go", incoming.origin);
+        landing.searchParams.set("token", token);
+        landing.searchParams.set("email", to);
+        landing.searchParams.set("callbackUrl", callbackUrl);
+        const linkUrl = landing.toString();
+        const host = incoming.host;
         const appUrl = process.env.AUTH_URL ?? `https://${host}`;
-        const html = renderMagicLinkHtml({ url, host, appUrl });
-        const text = renderMagicLinkText({ url, host });
+        const html = renderMagicLinkHtml({ url: linkUrl, host, appUrl });
+        const text = renderMagicLinkText({ url: linkUrl, host });
 
         const res = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -31,6 +45,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             html,
             text,
           }),
+          signal: AbortSignal.timeout(15_000),
         });
 
         if (!res.ok) {

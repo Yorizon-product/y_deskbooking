@@ -52,3 +52,4 @@ docs/screenshots/magic-link-email.txt
 
 # tsc incremental build cache
 tsconfig.tsbuildinfo
+.vercel

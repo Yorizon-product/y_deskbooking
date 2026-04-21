@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-const PUBLIC_PATHS = ["/", "/sign-in", "/sign-in/check-email", "/forbidden"];
+const PUBLIC_PATHS = ["/", "/forbidden"];
+const PUBLIC_PREFIXES = ["/sign-in"];
 
 export default auth((req) => {
   const { nextUrl } = req;
@@ -16,7 +17,9 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  const isPublic = PUBLIC_PATHS.includes(pathname);
+  const isPublic =
+    PUBLIC_PATHS.includes(pathname) ||
+    PUBLIC_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
   const session = req.auth;
   const isAdminRoute = pathname.startsWith("/admin");
 
