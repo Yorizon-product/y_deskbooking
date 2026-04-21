@@ -29,10 +29,10 @@
 
 ## 4. Admin inventory (`desk-inventory` + admin console pieces)
 
-- [ ] 4.1 Create `app/admin/layout.tsx` that enforces `session.user.role === 'admin'` and renders an admin sidebar
-- [ ] 4.2 Build `app/admin/floors/page.tsx`: list, create, rename, reorder (drag handles via `@dnd-kit/core`), soft-delete with empty-floor guard
-- [ ] 4.3 Build `app/admin/desks/page.tsx`: table grouped by floor, per-row edit dialog for label + attributes, activate/deactivate toggle
-- [ ] 4.4 Zod schemas + server actions for each mutation, surfaced via `useFormStatus` + `sonner` toasts
+- [x] 4.1 `app/admin/layout.tsx` enforces `session.user.role === 'admin'`, renders top-nav
+- [x] 4.2 `app/admin/floors/page.tsx`: list, create (dialog), rename (inline), reorder (dnd-kit), soft-delete with empty-floor guard
+- [x] 4.3 `app/admin/floors/[floorId]/page.tsx`: table of desks with label + attribute badges, create + edit dialog, active toggle
+- [x] 4.4 Zod schemas (`lib/validators/inventory.ts`) + server actions with typed ActionResult, `sonner` toasts for success + errors
 - [ ] 4.5 Tests: label-collision rejection, delete-floor-with-desks rejection, activation flow
 
 ## 5. Booking (`desk-booking` capability)

@@ -129,6 +129,7 @@ Full deploy steps are task group 8 in `tasks.md`.
 - [x] **Task group 1 — Project bootstrap** (Next.js 15, Tailwind v4, shadcn/ui new-york, Yorizon tokens live, theme toggle, Inter font)
 - [x] **Task group 2 — DB schema** (Prisma 6 schema + EXCLUDE constraint live on Neon, overlap-rejection smoke-tested, seed script run)
 - [x] **Task group 3 — Auth.js magic-link** (Resend via `cdit-works.de`, Prisma adapter, JWT sessions, role-gated middleware, admin layout, `/forbidden` page)
+- [x] **Task group 4 — Admin inventory UI** (floors list with drag-to-reorder + inline rename + delete, per-floor desk table with create/edit dialogs + active toggle; Zod-validated server actions + sonner toasts)
 - [ ] Task groups 4–6 — Admin, booking flow, oversight
 - [ ] Task groups 7–9 — Polish, deploy, screenshots-of-real-flow
 - [ ] First production deploy
