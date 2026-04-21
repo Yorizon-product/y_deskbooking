@@ -11,6 +11,7 @@ This repository contains a full OpenSpec package (proposal, design, specs, tasks
 | **Home** | ![Home · light](./docs/screenshots/home-light.png) | ![Home · dark](./docs/screenshots/home-dark.png) |
 | **Booking grid** | ![Book · light](./docs/screenshots/book-light.png) | ![Book · dark](./docs/screenshots/book-dark.png) |
 | **Sign-in** | ![Sign-in](./docs/screenshots/signin-light.png) | — |
+| **Magic-link email** | ![Magic-link email](./docs/screenshots/magic-link-email.png) | — |
 
 ---
 

@@ -45,3 +45,7 @@ prisma/*.db-journal
 
 # claude
 .claude/
+
+# email preview artefacts (regenerated via scripts/preview-email.ts)
+docs/screenshots/magic-link-email.html
+docs/screenshots/magic-link-email.txt
