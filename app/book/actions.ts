@@ -5,7 +5,11 @@ import { Prisma } from "@prisma/client";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { BookingCreateSchema, BookingCancelSchema } from "@/lib/validators/booking";
+import {
+  BookingCreateSchema,
+  BookingCancelSchema,
+  BookingSwapSchema,
+} from "@/lib/validators/booking";
 import {
   isWithinBookingWindow,
   slotToUtcRange,
@@ -82,6 +86,71 @@ export async function createBooking(input: unknown): Promise<ActionResult> {
     }
     if (e instanceof Error && /Booking_no_overlap|exclusion/i.test(e.message)) {
       return { ok: false, error: "That desk was just booked for this slot. Try another." };
+    }
+    throw e;
+  }
+
+  revalidatePath("/book");
+  revalidatePath("/my-bookings");
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+/**
+ * Cancel an existing confirmed booking and book a different desk for the same
+ * date + slot in a single transaction. Used by the swap-seat flow.
+ */
+export async function swapBooking(input: unknown): Promise<ActionResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: "Not signed in" };
+  const userId = session.user.id;
+
+  const parsed = BookingSwapSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  const { fromId, toDeskId } = parsed.data;
+
+  const from = await prisma.booking.findUnique({
+    where: { id: fromId },
+    select: { id: true, userId: true, status: true, startAt: true, endAt: true, slot: true, deskId: true },
+  });
+  if (!from) return { ok: false, error: "Booking not found" };
+  if (from.userId !== userId) return { ok: false, error: "Not authorised" };
+  if (from.status !== "confirmed") return { ok: false, error: "This booking is no longer active." };
+  if (isPast(from.startAt)) return { ok: false, error: "Past bookings cannot be swapped." };
+  if (from.deskId === toDeskId) return { ok: false, error: "That's the desk you already have." };
+
+  const toDesk = await prisma.desk.findUnique({
+    where: { id: toDeskId },
+    select: { id: true, active: true, floor: { select: { active: true } } },
+  });
+  if (!toDesk || !toDesk.active || !toDesk.floor.active) {
+    return { ok: false, error: "That desk is not available." };
+  }
+
+  try {
+    await prisma.$transaction([
+      prisma.booking.update({
+        where: { id: from.id },
+        data: {
+          status: "cancelled",
+          cancelledAt: new Date(),
+          cancelledById: userId,
+        },
+      }),
+      prisma.booking.create({
+        data: {
+          deskId: toDeskId,
+          userId,
+          slot: from.slot,
+          startAt: from.startAt,
+          endAt: from.endAt,
+          status: "confirmed",
+        },
+      }),
+    ]);
+  } catch (e) {
+    if (e instanceof Error && /Booking_no_overlap|exclusion/i.test(e.message)) {
+      return { ok: false, error: "Someone just booked that desk for this slot. Try another." };
     }
     throw e;
   }

@@ -11,3 +11,8 @@ export const BookingCreateSchema = z.object({
 export const BookingCancelSchema = z.object({
   id: z.string().min(1),
 });
+
+export const BookingSwapSchema = z.object({
+  fromId: z.string().min(1),
+  toDeskId: z.string().min(1),
+});

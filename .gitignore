@@ -49,3 +49,6 @@ prisma/*.db-journal
 # email preview artefacts (regenerated via scripts/preview-email.ts)
 docs/screenshots/magic-link-email.html
 docs/screenshots/magic-link-email.txt
+
+# tsc incremental build cache
+tsconfig.tsbuildinfo
