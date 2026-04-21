@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { CommitBadge } from "@/components/commit-badge";
 import { SignInForm } from "@/components/sign-in-form";
 
 export default async function SignInPage({
@@ -9,7 +10,7 @@ export default async function SignInPage({
 }) {
   const params = await searchParams;
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background p-6">
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-background p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
@@ -29,6 +30,7 @@ export default async function SignInPage({
           </Link>
         </CardFooter>
       </Card>
+      <CommitBadge />
     </div>
   );
 }
