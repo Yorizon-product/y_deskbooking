@@ -1,139 +1,160 @@
 # y_deskbooking
 
-> A spec-first demo of a minimal desk-booking tool for hot-desking / flex-office teams.
+> A minimal, opinionated desk-booking tool for hot-desking offices.
+> Spec-first (OpenSpec), implemented in Next.js, and shipped with a DB-level
+> guarantee that two people can never book the same desk for overlapping time.
 
-This repository contains a full OpenSpec package (proposal, design, specs, tasks) **and** the Next.js app scaffold implementing it. The app boots, builds clean, and renders the Yorizon theme. Auth, DB, and real booking logic land in the next task groups.
+Not yet deployed — this repo is the whole thing so far: OpenSpec package +
+working Next.js app + Prisma schema + Neon-backed verification. The next
+checkpoint is putting it on Vercel.
+
+---
 
 ## Preview
 
 | | Light | Dark |
 |---|---|---|
 | **Home** | ![Home · light](./docs/screenshots/home-light.png) | ![Home · dark](./docs/screenshots/home-dark.png) |
-| **Booking grid** | ![Book · light](./docs/screenshots/book-light.png) | ![Book · dark](./docs/screenshots/book-dark.png) |
-| **Sign-in** | ![Sign-in](./docs/screenshots/signin-light.png) | — |
+| **Sign-in** | ![Sign-in · light](./docs/screenshots/signin-light.png) | ![Sign-in · dark](./docs/screenshots/signin-dark.png) |
 | **Magic-link email** | ![Magic-link email](./docs/screenshots/magic-link-email.png) | — |
+| **Forbidden (non-admin)** | ![Forbidden](./docs/screenshots/forbidden-light.png) | — |
+| **Yorizon palette** | ![Yorizon palette · light](./docs/screenshots/palette-light.svg) | ![Yorizon palette · dark](./docs/screenshots/palette-dark.svg) |
+
+> Authenticated screens (`/book`, `/my-bookings`, `/admin/*`) aren't shown here because grabbing them requires a signed-in session. They follow the same Yorizon theme — click the magic link in your inbox and you're in.
 
 ---
 
-## What it is
+## What works today
 
-A small web app where an employee can:
+All four capabilities from [`proposal.md`](./openspec/changes/desk-booking-tool/proposal.md) are implemented end-to-end locally.
 
-1. Sign in with a magic link.
-2. Pick a date and a time slot (`morning` / `afternoon` / `all-day`).
-3. See a grid of desks grouped by floor, with a clear indicator of which ones are free.
-4. Book a free desk — and only a free desk, even under concurrent requests.
-5. View and cancel their own upcoming bookings.
+| Capability | Status | Highlights |
+|---|---|---|
+| `user-auth` | ✅ | Email magic-link (Resend via `cdit-works.de`), auto-provisioning, 30-day JWT session, role-based route protection, custom Yorizon-branded email |
+| `desk-inventory` | ✅ | Floors + desks CRUD in `/admin/floors`, drag-to-reorder (`@dnd-kit`), inline rename, empty-floor delete guard, active toggle |
+| `desk-booking` | ✅ | `/book` grid with date nav + slot tabs + per-slot state (free/mine/taken), `/my-bookings` with cancel, 60-day window, one-per-day rule, **DB-level overlap prevention** |
+| `admin-console` | ◐ partial | Admin layout + minimal dashboard + floors/desks manager done. Booking oversight, admin-cancel-with-reason, and user role toggle are task group 6 (next up). |
 
-An admin can additionally:
+### Invariants the DB enforces, not just app code
 
-- Manage floors and desks (labels, attributes, active/inactive).
-- Oversee every booking, cancel with an audit reason, and see utilisation.
-- Promote / demote other users between `user` and `admin`.
+- **No two confirmed bookings can overlap on the same desk.** Enforced by a Postgres `EXCLUDE USING GIST` constraint on a trigger-populated `tstzrange` column. [See the migration](./prisma/migrations/20260421104157_booking_no_overlap/migration.sql).
+- Verified with repeatable smoke tests: [`prisma/smoke-overlap.ts`](./prisma/smoke-overlap.ts) and [`prisma/smoke-booking.ts`](./prisma/smoke-booking.ts). Both run green against Neon.
+
+---
 
 ## Architecture at a glance
 
-Kept deliberately boring so that one person can ship, deploy, and maintain it.
+Kept deliberately boring — one person can ship, deploy, and maintain it.
 
-| Layer                | Choice                                                                 |
-| -------------------- | ---------------------------------------------------------------------- |
-| **Framework**        | Next.js (App Router) + TypeScript                                      |
-| **UI**               | shadcn/ui + Tailwind CSS v4, themed with **Yorizon**                   |
-| **Auth**             | Auth.js (NextAuth v5), email magic-link via Resend                     |
-| **DB / ORM**         | Postgres (Neon) + Prisma                                               |
-| **Concurrency**      | DB-level `EXCLUDE USING GIST` constraint — overlaps are impossible     |
-| **Hosting**          | Vercel                                                                 |
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 (App Router) + TypeScript |
+| UI | shadcn/ui (new-york) + Tailwind CSS v4, themed with **Yorizon** |
+| Auth | Auth.js v5 (next-auth beta) + Prisma adapter, magic-link via Resend |
+| Database | Postgres (Neon, EU) + Prisma 6 |
+| Concurrency | DB-level `EXCLUDE` constraint — overlaps are impossible |
+| Hosting | Vercel (not yet deployed) |
 
 One repo, one service, one DB. No queues, no workers, no microservices.
 
-## The Yorizon theme
+For the long version — stack rationale, the Yorizon token block, the
+`tstzrange` IMMUTABLE workaround, and the open design questions — read
+[`docs/architecture.md`](./docs/architecture.md).
 
-The visual identity is applied through shadcn/ui design tokens exported from the [tweakcn](https://ytweakcn.vercel.app/editor/theme?theme=yorizon) editor. Dark olive (`#3e4227`) and electric lime (`#defe19`) swap roles between light and dark modes — the lime is the primary CTA colour in dark mode and the accent in light mode.
+---
 
-<!-- These swatches are SVGs generated from the exact token values captured in design.md -->
+## Reading order (for a new contributor)
 
-**Light mode**
+1. [`openspec/changes/desk-booking-tool/proposal.md`](./openspec/changes/desk-booking-tool/proposal.md) — **why** this exists and what it introduces
+2. [`openspec/changes/desk-booking-tool/design.md`](./openspec/changes/desk-booking-tool/design.md) — **how** it's built, with the Yorizon token block
+3. [`openspec/changes/desk-booking-tool/specs/`](./openspec/changes/desk-booking-tool/specs) — per-capability requirements with WHEN/THEN scenarios
+4. [`openspec/changes/desk-booking-tool/tasks.md`](./openspec/changes/desk-booking-tool/tasks.md) — the implementation checklist (live progress)
 
-![Yorizon light-mode palette](./docs/screenshots/palette-light.svg)
+### Capability specs
 
-**Dark mode**
+- [`user-auth`](./openspec/changes/desk-booking-tool/specs/user-auth/spec.md)
+- [`desk-inventory`](./openspec/changes/desk-booking-tool/specs/desk-inventory/spec.md)
+- [`desk-booking`](./openspec/changes/desk-booking-tool/specs/desk-booking/spec.md)
+- [`admin-console`](./openspec/changes/desk-booking-tool/specs/admin-console/spec.md)
 
-![Yorizon dark-mode palette](./docs/screenshots/palette-dark.svg)
+---
 
-The full token block — `:root` + `.dark` — is embedded in [`openspec/changes/desk-booking-tool/design.md`](./openspec/changes/desk-booking-tool/design.md#4-ui-shadcnui--tailwind-v4-themed-with-yorizon) and is intended to drop verbatim into `app/globals.css`.
+## Local development
 
-## Where to start reading
+### Prerequisites
 
-The spec package is ordered so that each file builds on the previous:
+- Node 20 LTS or newer
+- A Postgres database with the `btree_gist` extension available (Neon works out of the box; a local Postgres 14+ does too)
+- A Resend account + verified sending domain (or swap the provider in `auth.ts`)
 
-| File                                                                                       | Purpose                                                         |
-| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| [`openspec/changes/desk-booking-tool/proposal.md`](./openspec/changes/desk-booking-tool/proposal.md) | Why this exists, what capabilities it introduces                |
-| [`openspec/changes/desk-booking-tool/design.md`](./openspec/changes/desk-booking-tool/design.md)     | Technical decisions, stack rationale, full Yorizon token block  |
-| [`openspec/changes/desk-booking-tool/specs/`](./openspec/changes/desk-booking-tool/specs)           | Per-capability requirements + WHEN/THEN scenarios                |
-| [`openspec/changes/desk-booking-tool/tasks.md`](./openspec/changes/desk-booking-tool/tasks.md)       | Implementation checklist, in dependency order                    |
-
-### Capabilities
-
-- [`user-auth`](./openspec/changes/desk-booking-tool/specs/user-auth/spec.md) — magic-link sign-in, session lifecycle, role-based route protection
-- [`desk-inventory`](./openspec/changes/desk-booking-tool/specs/desk-inventory/spec.md) — floors, desks, attributes, activation
-- [`desk-booking`](./openspec/changes/desk-booking-tool/specs/desk-booking/spec.md) — availability, booking, one-per-day rule, cancel
-- [`admin-console`](./openspec/changes/desk-booking-tool/specs/admin-console/spec.md) — admin views for all of the above plus user roles
-
-## Running locally (once implemented)
-
-The tasks file drives the build; below is the intended dev setup after task group 1–2 are complete:
+### First run
 
 ```bash
-# install
+# 1. Install
 npm install
 
-# env (copy + fill)
+# 2. Configure env
 cp .env.example .env.local
+# edit .env.local — DATABASE_URL, DIRECT_URL, AUTH_SECRET, AUTH_RESEND_KEY, SEED_ADMIN_EMAIL
 
-# database
-npx prisma migrate dev
-npm run db:seed          # creates a first admin + sample desks
+# 3. Apply schema + constraints
+npx prisma migrate deploy      # runs both migrations in order
 
-# dev server
-npm run dev              # → http://localhost:3000
+# 4. Seed (one admin + two floors + ten desks)
+npm run db:seed
+
+# 5. Run
+npm run dev                    # http://localhost:3000
 ```
 
-Required env vars (see `.env.example`, to be added by task 1.2 / 2.1):
+### Handy scripts
 
-| Var                 | What for                                     |
-| ------------------- | -------------------------------------------- |
-| `DATABASE_URL`      | Pooled Postgres connection string (Neon)     |
-| `DIRECT_URL`        | Direct connection for Prisma migrations      |
-| `AUTH_SECRET`       | NextAuth JWT signing key                     |
-| `AUTH_RESEND_KEY`   | Resend API key for magic-link emails         |
-| `AUTH_URL`          | Base URL (`http://localhost:3000` in dev)    |
-| `SEED_ADMIN_EMAIL`  | Email address seeded as the first admin      |
-| `OFFICE_TZ`         | IANA timezone, e.g. `Europe/Berlin`          |
+| Command | What it does |
+|---|---|
+| `npm run dev` | Next dev server with Turbopack |
+| `npm run build` | Production build |
+| `npm run lint` | Next/ESLint |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run db:seed` | Seed admin + floors + desks |
+| `npx tsx prisma/smoke-overlap.ts` | Proves DB rejects overlapping bookings |
+| `npx tsx prisma/smoke-booking.ts` | Proves slot math, overlap, all-day-over-morning, free-after-cancel |
+| `npx tsx scripts/preview-email.ts` | Renders `docs/screenshots/magic-link-email.html` for local preview |
 
-## Deploying
+### Environment variables
 
-- **Target:** Vercel, linked to this repo.
-- **Preview deploys:** every PR gets its own URL.
-- **Migrations:** `prisma migrate deploy` runs at deploy time.
-- **Rollback:** Vercel's previous-deployment rollback is one click. Schema changes are shipped additive-first so a rollback never requires a schema revert.
+| Var | Purpose |
+|---|---|
+| `DATABASE_URL` | Pooled Postgres connection (app reads/writes) |
+| `DIRECT_URL` | Direct connection (used only by Prisma migrate) |
+| `AUTH_SECRET` | NextAuth JWT signing key (`openssl rand -base64 32`) |
+| `AUTH_URL` | Public app URL (`http://localhost:3000` in dev) |
+| `AUTH_RESEND_KEY` | Resend API key |
+| `AUTH_EMAIL_FROM` | Magic-link sender address (must match a verified Resend domain) |
+| `SEED_ADMIN_EMAIL` | Email that gets role=admin on first seed |
+| `OFFICE_TZ` | IANA timezone for booking slots (default `Europe/Berlin`) |
 
-Full deploy steps are task group 8 in `tasks.md`.
+---
 
-## Status
+## Deploy
 
-- [x] Proposal
-- [x] Design (stack + full Yorizon token block)
-- [x] Specs (4 capabilities, scenario-backed)
-- [x] Task list (9 groups, ~50 tasks)
-- [x] **Task group 1 — Project bootstrap** (Next.js 15, Tailwind v4, shadcn/ui new-york, Yorizon tokens live, theme toggle, Inter font)
-- [x] **Task group 2 — DB schema** (Prisma 6 schema + EXCLUDE constraint live on Neon, overlap-rejection smoke-tested, seed script run)
-- [x] **Task group 3 — Auth.js magic-link** (Resend via `cdit-works.de`, Prisma adapter, JWT sessions, role-gated middleware, admin layout, `/forbidden` page)
-- [x] **Task group 4 — Admin inventory UI** (floors list with drag-to-reorder + inline rename + delete, per-floor desk table with create/edit dialogs + active toggle; Zod-validated server actions + sonner toasts)
-- [x] **Task group 5 — Booking flow** (`/book` grid with date nav + slot tabs + per-slot indicators, `/my-bookings` with cancel; 60-day window, one-per-day rule, DB-level overlap rejection — all smoke-tested)
-- [ ] Task groups 4–6 — Admin, booking flow, oversight
-- [ ] Task groups 7–9 — Polish, deploy, screenshots-of-real-flow
-- [ ] First production deploy
+Not live yet. The stack targets Vercel + Neon and the path is documented in [`docs/deploy.md`](./docs/deploy.md). Short version: create the Vercel project linked to this repo, paste the env vars, run `prisma migrate deploy` on build, promote to production. Nothing clever.
+
+---
+
+## Status & roadmap
+
+- [x] Proposal, design, specs, tasks (OpenSpec package)
+- [x] Task group 1 — **Project bootstrap** (Next.js 15, Tailwind v4, shadcn/ui, Yorizon tokens)
+- [x] Task group 2 — **DB schema on Neon** (EXCLUDE overlap live, smoke-tested)
+- [x] Task group 3 — **Auth.js magic-link** (Resend via `cdit-works.de`, role-gated middleware, Yorizon-branded email)
+- [x] Task group 4 — **Admin inventory UI** (floors + desks with drag, dialogs, toasts)
+- [x] Task group 5 — **Booking flow** (`/book` grid, `/my-bookings`, cancel)
+- [ ] Task group 6 — Admin booking oversight + user role toggle
+- [ ] Task group 7 — A11y + polish + responsive
+- [ ] Task group 8 — **First production deploy on Vercel**
+- [ ] Task group 9 — Expand docs with real authed-flow screenshots
+
+Live progress in [`openspec/changes/desk-booking-tool/tasks.md`](./openspec/changes/desk-booking-tool/tasks.md).
 
 ## Licence
 
