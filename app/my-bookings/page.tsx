@@ -15,7 +15,6 @@ import {
   SLOT_LABELS,
   classifySlot,
   formatInOfficeTz,
-  isPast,
   slotToUtcRange,
   todayInOfficeTz,
 } from "@/lib/booking/slots";
@@ -55,12 +54,16 @@ export default async function MyBookingsPage() {
   ]);
 
   const now = new Date();
+  // Today's confirmed booking = any confirmed booking whose window overlaps
+  // the current office-local day and whose end is still ahead. A booking that
+  // started earlier today but hasn't ended yet still counts — it's "your
+  // booking today".
   const todayConfirmed = bookings.find(
     (b) =>
       b.status === "confirmed" &&
       b.startAt < dayEnd &&
       b.endAt > dayStart &&
-      !isPast(b.startAt, now)
+      b.endAt > now
   );
 
   // If there's a confirmed booking for today, compute per-desk taken state
@@ -119,11 +122,11 @@ export default async function MyBookingsPage() {
   const upcomingOtherDays = bookings.filter(
     (b) =>
       b.status === "confirmed" &&
-      !isPast(b.startAt, now) &&
+      b.endAt > now &&
       b.id !== todayConfirmed?.id
   );
   const history = bookings.filter(
-    (b) => !(b.status === "confirmed" && !isPast(b.startAt, now))
+    (b) => !(b.status === "confirmed" && b.endAt > now)
   );
 
   return (

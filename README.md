@@ -10,6 +10,32 @@
 
 ## Preview
 
+### The main flow: `/my-bookings` (mobile, 420×900)
+
+The "Paper design" deliverable — your booking today is the hero, the floor plan is embedded and pannable, swap and release are the primary actions.
+
+| Light | Dark | Swap (dark) | Swap sheet (dark) |
+|---|---|---|---|
+| ![My bookings · light](./docs/screenshots/my-bookings-light.png) | ![My bookings · dark](./docs/screenshots/my-bookings-dark.png) | ![Swap seat · dark](./docs/screenshots/my-bookings-swap-dark.png) | ![Swap sheet · dark](./docs/screenshots/my-bookings-swap-sheet-dark.png) |
+
+### Booking grid: `/book`
+
+Date nav + slot tabs + per-slot indicators per desk. Reserves one booking per user per day.
+
+| Light | Dark |
+|---|---|
+| ![Book · light](./docs/screenshots/book-light.png) | ![Book · dark](./docs/screenshots/book-dark.png) |
+
+### Admin console
+
+| | Light | Dark |
+|---|---|---|
+| **Dashboard** | ![Admin dashboard · light](./docs/screenshots/admin-dashboard-light.png) | ![Admin dashboard · dark](./docs/screenshots/admin-dashboard-dark.png) |
+| **Floors list** | ![Admin floors · light](./docs/screenshots/admin-floors-light.png) | ![Admin floors · dark](./docs/screenshots/admin-floors-dark.png) |
+| **Desks on a floor** | ![Admin desks · light](./docs/screenshots/admin-desks-light.png) | ![Admin desks · dark](./docs/screenshots/admin-desks-dark.png) |
+
+### Auth + meta
+
 | | Light | Dark |
 |---|---|---|
 | **Home** | ![Home · light](./docs/screenshots/home-light.png) | ![Home · dark](./docs/screenshots/home-dark.png) |
@@ -17,8 +43,6 @@
 | **Magic-link email** | ![Magic-link email](./docs/screenshots/magic-link-email.png) | — |
 | **Forbidden (non-admin)** | ![Forbidden](./docs/screenshots/forbidden-light.png) | — |
 | **Yorizon palette** | ![Yorizon palette · light](./docs/screenshots/palette-light.svg) | ![Yorizon palette · dark](./docs/screenshots/palette-dark.svg) |
-
-> Authenticated screens (`/book`, `/my-bookings`, `/admin/*`) aren't shown here because grabbing them requires a signed-in session. They follow the same Yorizon theme — click the magic link in your inbox and you're in.
 
 ---
 
