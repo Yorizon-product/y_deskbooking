@@ -1,9 +1,14 @@
 import Link from "next/link";
+import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SignOutButton } from "@/components/sign-out-button";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  const user = session?.user;
+
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <header className="border-b border-border">
@@ -11,7 +16,18 @@ export default function Home() {
           <Link href="/" className="text-lg font-semibold tracking-tight">
             y_deskbooking
           </Link>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            {user ? (
+              <>
+                <span className="hidden text-sm text-muted-foreground sm:inline">
+                  {user.email}
+                  {user.role === "admin" ? " · admin" : ""}
+                </span>
+                <SignOutButton />
+              </>
+            ) : null}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -31,9 +47,17 @@ export default function Home() {
             <Button asChild size="lg">
               <Link href="/book">Go to booking</Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/sign-in">Sign in</Link>
-            </Button>
+            {user ? (
+              user.role === "admin" ? (
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/admin">Admin console</Link>
+                </Button>
+              ) : null
+            ) : (
+              <Button asChild size="lg" variant="outline">
+                <Link href="/sign-in">Sign in</Link>
+              </Button>
+            )}
           </div>
         </section>
 

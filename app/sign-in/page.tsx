@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { SignInForm } from "@/components/sign-in-form";
 
-export default function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
+}) {
+  const params = await searchParams;
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background p-6">
       <Card className="w-full max-w-sm">
@@ -13,18 +16,12 @@ export default function SignInPage() {
           <CardDescription>We&apos;ll email you a single-use link. No passwords.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Work email</Label>
-              <Input id="email" name="email" type="email" placeholder="you@company.com" autoComplete="email" required />
-            </div>
-            <Button type="submit" className="w-full" disabled>
-              Email me a link
-            </Button>
-            <p className="text-xs text-muted-foreground">
-              Auth wiring lands in task 3.x &mdash; this form isn&apos;t live yet.
+          <SignInForm callbackUrl={params.callbackUrl} />
+          {params.error ? (
+            <p className="mt-4 text-sm text-destructive">
+              Sign-in failed. Try requesting a new link.
             </p>
-          </form>
+          ) : null}
         </CardContent>
         <CardFooter className="text-xs text-muted-foreground">
           <Link href="/" className="hover:text-foreground">

@@ -19,12 +19,12 @@
 
 ## 3. Authentication (`user-auth` capability)
 
-- [ ] 3.1 Install `next-auth@beta`, `@auth/prisma-adapter`, `resend`
-- [ ] 3.2 Configure `auth.ts` with Prisma adapter + Resend email provider, 30-day session, JWT strategy
-- [ ] 3.3 Create `app/sign-in/page.tsx` — email-only form, shows "check your inbox" confirmation regardless of whether email exists
-- [ ] 3.4 Add `middleware.ts` protecting all non-public routes, redirecting with `?callbackUrl=`
-- [ ] 3.5 Extend the session callback to include `role` on the token and the session
-- [ ] 3.6 Add a `SignOutButton` component wired to `signOut({ callbackUrl: '/' })`
+- [x] 3.1 Install `next-auth@beta`, `@auth/prisma-adapter`, `resend`
+- [x] 3.2 `auth.ts` with Prisma adapter + Resend provider (domain `cdit-works.de`), JWT strategy, 30-day sessions
+- [x] 3.3 `/sign-in` form submits to Auth.js, `/sign-in/check-email` confirmation page
+- [x] 3.4 `middleware.ts` gates everything except `/`, `/sign-in`, `/sign-in/check-email`, `/forbidden` + Auth.js internals, preserves `?callbackUrl=`
+- [x] 3.5 JWT + session callbacks carry `id` and `role`, refreshed via `update` trigger
+- [x] 3.6 `<SignOutButton>` in header; admin layout + `/forbidden` landing page added
 - [ ] 3.7 Write integration tests: link creation, first-time provisioning, expiry rejection, role gating
 
 ## 4. Admin inventory (`desk-inventory` + admin console pieces)
