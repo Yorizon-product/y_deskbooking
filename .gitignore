@@ -1,0 +1,47 @@
+# deps
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# env
+.env
+.env.*
+!.env.example
+
+# builds
+.next/
+out/
+dist/
+build/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# tool caches
+.cache/
+.turbo/
+.vercel/
+.eslintcache
+.prettiercache
+coverage/
+
+# local prisma artefacts
+prisma/*.db
+prisma/*.db-journal
+
+# claude
+.claude/

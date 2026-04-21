@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" font-family="Inter, -apple-system, sans-serif">
+  <style>
+    .bg { fill: hsl(90 5.8824% 6.6667%); }
+    .title { font-size: 18px; font-weight: 600; fill: hsl(68.5714 14.8936% 90.7843%); }
+    .sub { font-size: 12px; fill: hsl(69.4737 8.8372% 57.8431%); }
+    .name { font-size: 12px; font-weight: 500; }
+    .hex { font-size: 11px; font-family: ui-monospace, monospace; }
+  </style>
+  <rect class="bg" width="900" height="420"/>
+  <text class="title" x="32" y="42">Yorizon · Dark mode</text>
+  <text class="sub" x="32" y="62">Note the intentional role swap — accent (olive) and primary (lime) trade loudness</text>
+
+  <g transform="translate(32,90)">
+    <rect width="180" height="90" rx="8" fill="hsl(90 5.8824% 6.6667%)" stroke="hsl(75 12.5% 18.8235%)"/>
+    <text class="name" x="12" y="28" fill="hsl(68.5714 14.8936% 90.7843%)">background</text>
+    <text class="hex" x="12" y="48" fill="hsl(68.5714 14.8936% 90.7843%)">hsl(90 6% 7%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(68.5714 14.8936% 90.7843%)">#111210</text>
+  </g>
+  <g transform="translate(222,90)">
+    <rect width="180" height="90" rx="8" fill="hsl(68.3843 99.1342% 54.7059%)"/>
+    <text class="name" x="12" y="28" fill="hsl(75 16.6667% 9.4118%)">primary</text>
+    <text class="hex" x="12" y="48" fill="hsl(75 16.6667% 9.4118%)">hsl(68 99% 55%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(75 16.6667% 9.4118%)">#defe19</text>
+  </g>
+  <g transform="translate(412,90)">
+    <rect width="180" height="90" rx="8" fill="hsl(68.8889 25.7143% 20.5882%)"/>
+    <text class="name" x="12" y="28" fill="hsl(68.3843 99.1342% 54.7059%)">accent</text>
+    <text class="hex" x="12" y="48" fill="hsl(68.3843 99.1342% 54.7059%)">hsl(68 26% 21%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(68.3843 99.1342% 54.7059%)">#3e4227</text>
+  </g>
+  <g transform="translate(602,90)">
+    <rect width="180" height="90" rx="8" fill="hsl(75 11.1111% 14.1176%)" stroke="hsl(75 12.5% 18.8235%)"/>
+    <text class="name" x="12" y="28" fill="hsl(68.5714 14.8936% 90.7843%)">secondary / muted</text>
+    <text class="hex" x="12" y="48" fill="hsl(68.5714 14.8936% 90.7843%)">hsl(75 11% 14%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(68.5714 14.8936% 90.7843%)">#262820</text>
+  </g>
+
+  <g transform="translate(32,200)">
+    <rect width="180" height="90" rx="8" fill="hsl(75 16.6667% 9.4118%)" stroke="hsl(75 12.5% 18.8235%)"/>
+    <text class="name" x="12" y="28" fill="hsl(68.5714 14.8936% 90.7843%)">card / popover</text>
+    <text class="hex" x="12" y="48" fill="hsl(68.5714 14.8936% 90.7843%)">hsl(75 17% 9%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(68.5714 14.8936% 90.7843%)">#1a1c14</text>
+  </g>
+  <g transform="translate(222,200)">
+    <rect width="180" height="90" rx="8" fill="hsl(75 12.5% 18.8235%)"/>
+    <text class="name" x="12" y="28" fill="hsl(68.5714 14.8936% 90.7843%)">border / input</text>
+    <text class="hex" x="12" y="48" fill="hsl(68.5714 14.8936% 90.7843%)">hsl(75 13% 19%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(68.5714 14.8936% 90.7843%)">#33362a</text>
+  </g>
+  <g transform="translate(412,200)">
+    <rect width="180" height="90" rx="8" fill="hsl(0 84.2365% 60.1961%)"/>
+    <text class="name" x="12" y="28" fill="hsl(0 0% 100%)">destructive</text>
+    <text class="hex" x="12" y="48" fill="hsl(0 0% 100%)">hsl(0 84% 60%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(0 0% 100%)">#ef4444</text>
+  </g>
+  <g transform="translate(602,200)">
+    <rect width="180" height="90" rx="8" fill="hsl(69.4737 8.8372% 57.8431%)"/>
+    <text class="name" x="12" y="28" fill="hsl(75 16.6667% 9.4118%)">muted-foreground</text>
+    <text class="hex" x="12" y="48" fill="hsl(75 16.6667% 9.4118%)">hsl(69 9% 58%)</text>
+    <text class="hex" x="12" y="66" fill="hsl(75 16.6667% 9.4118%)">#9a9d8a</text>
+  </g>
+
+  <text class="sub" x="32" y="340">Chart palette</text>
+  <g transform="translate(32,350)">
+    <rect width="140" height="50" rx="6" fill="hsl(68.3843 99.1342% 54.7059%)"/>
+    <text class="hex" x="12" y="30" fill="hsl(75 16.6667% 9.4118%)">chart-1 · #defe19</text>
+  </g>
+  <g transform="translate(182,350)">
+    <rect width="140" height="50" rx="6" fill="hsl(68.8889 25.7143% 20.5882%)"/>
+    <text class="hex" x="12" y="30" fill="hsl(68.3843 99.1342% 54.7059%)">chart-2 · #3e4227</text>
+  </g>
+  <g transform="translate(332,350)">
+    <rect width="140" height="50" rx="6" fill="hsl(69.4737 8.8372% 57.8431%)"/>
+    <text class="hex" x="12" y="30" fill="hsl(75 16.6667% 9.4118%)">chart-3 · #9a9d8a</text>
+  </g>
+  <g transform="translate(482,350)">
+    <rect width="140" height="50" rx="6" fill="hsl(69 10% 39.2157%)"/>
+    <text class="hex" x="12" y="30" fill="hsl(68.5714 14.8936% 90.7843%)">chart-4 · #6b6e5a</text>
+  </g>
+  <g transform="translate(632,350)">
+    <rect width="140" height="50" rx="6" fill="hsl(68.5714 14.8936% 90.7843%)"/>
+    <text class="hex" x="12" y="30" fill="hsl(75 16.6667% 9.4118%)">chart-5 · #eaebe4</text>
+  </g>
+</svg>
