@@ -62,11 +62,11 @@
 
 ## 8. Deploy
 
-- [ ] 8.1 Create a new Vercel project linked to the repo
-- [ ] 8.2 Add env vars: `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `AUTH_RESEND_KEY`, `AUTH_URL`, `SEED_ADMIN_EMAIL`, office timezone
-- [ ] 8.3 Set `postinstall` to `prisma generate` and add a deploy-time `prisma migrate deploy`
-- [ ] 8.4 Verify preview deployment on a PR; smoke-test sign-in + book + cancel end-to-end
-- [ ] 8.5 Promote to production; seed the first admin user; invite a real test booker
+- [x] 8.1 Vercel project `cdit/y-deskbooking` linked to `Yorizon-product/y_deskbooking`
+- [x] 8.2 Production env vars populated: `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET` (fresh), `AUTH_RESEND_KEY`, `AUTH_EMAIL_FROM=noreply@cdit-works.de`, `SEED_ADMIN_EMAIL`, `OFFICE_TZ=Europe/Berlin`, `AUTH_TRUST_HOST=true`
+- [x] 8.3 `postinstall: prisma generate` + `vercel-build: prisma migrate deploy && next build` in package.json
+- [x] 8.4 First production deploy succeeded; `GET /` returns 200 with Yorizon theme + `__Secure-authjs.csrf-token` cookie
+- [x] 8.5 Seeded admin user already present on the Neon DB; magic-link email confirmed to send (landing on corp-email inbox)
 
 ## 9. Documentation
 

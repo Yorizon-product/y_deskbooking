@@ -4,9 +4,7 @@
 > Spec-first (OpenSpec), implemented in Next.js, and shipped with a DB-level
 > guarantee that two people can never book the same desk for overlapping time.
 
-Not yet deployed — this repo is the whole thing so far: OpenSpec package +
-working Next.js app + Prisma schema + Neon-backed verification. The next
-checkpoint is putting it on Vercel.
+**Live: https://y-deskbooking.vercel.app** — deployed on Vercel against a Neon Postgres. The seeded admin user and ten desks across two floors are already there; request a magic link on `/sign-in`.
 
 ---
 
@@ -151,7 +149,7 @@ Not live yet. The stack targets Vercel + Neon and the path is documented in [`do
 - [x] Task group 5 — **Booking flow** (`/book` grid, `/my-bookings`, cancel)
 - [ ] Task group 6 — Admin booking oversight + user role toggle
 - [ ] Task group 7 — A11y + polish + responsive
-- [ ] Task group 8 — **First production deploy on Vercel**
+- [x] Task group 8 — **First production deploy on Vercel** (live at https://y-deskbooking.vercel.app, both Prisma migrations applied via `vercel-build`)
 - [ ] Task group 9 — Expand docs with real authed-flow screenshots
 
 Live progress in [`openspec/changes/desk-booking-tool/tasks.md`](./openspec/changes/desk-booking-tool/tasks.md).
