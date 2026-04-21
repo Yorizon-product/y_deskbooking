@@ -37,12 +37,12 @@
 
 ## 5. Booking (`desk-booking` capability)
 
-- [ ] 5.1 Create `app/book/page.tsx`: date picker (default today, +60 days max), slot tabs (morning/afternoon/all-day), grid of desks grouped by floor
-- [ ] 5.2 Server-side availability query: for a given date, return each active desk with `{ morning, afternoon, allDay } ∈ { free, mine, taken }`
-- [ ] 5.3 Booking server action: validate window, validate desk active, enforce one-booking-per-user-per-date, insert row (DB constraint catches concurrent conflicts)
-- [ ] 5.4 Build `app/my-bookings/page.tsx`: upcoming + past sections, cancel button on upcoming items
-- [ ] 5.5 Cancel server action: owner-or-admin check, reject past startAt, set `status=cancelled` + `cancelledAt`
-- [ ] 5.6 Tests: happy-path book, overlap on same slot, all-day vs half-day conflict, second-booking-same-date block, cancel-past rejection, ownership rejection
+- [x] 5.1 `/book` page with date nav (today → +60 days), slot tabs (morning/afternoon/all-day), floor-grouped desk grid
+- [x] 5.2 Availability query (`lib/booking/availability.ts`) returns each active desk with per-slot state `free | mine | taken`, plus viewer's own booking for that date
+- [x] 5.3 `createBooking` server action: zod-validates input, enforces 60-day window, validates desk active, enforces one-booking-per-user-per-date in code, DB EXCLUDE constraint catches concurrent overlaps; friendly error mapping
+- [x] 5.4 `/my-bookings` page with upcoming + past/cancelled sections, per-booking cancel control
+- [x] 5.5 `cancelBooking` action: owner-or-admin check, rejects past `startAt`, sets `status=cancelled` + `cancelledAt` + `cancelledById`
+- [x] 5.6 `prisma/smoke-booking.ts` proved end-to-end on Neon: window check, overlap rejection (same slot), all-day-over-morning rejection, free-after-cancel
 
 ## 6. Admin booking + utilization views (`admin-console` capability)
 
